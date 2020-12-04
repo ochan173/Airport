@@ -223,8 +223,7 @@ public class GuiApp extends JFrame {
         addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 displayArea.setText("");
-                displayArea.append("Add Flight Option");
-                System.out.println("Add Flight Option");
+                displayArea.append("Add Flight Option\n");
                 AddFlightDialog addFlightDialog = new AddFlightDialog(GuiApp.this);
                 addFlightDialog.setVisible(true);
             }
@@ -235,12 +234,12 @@ public class GuiApp extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 displayArea.setText("");
                 if (airport.getFlights().size() > 0) {
-                    displayArea.append("Delay Flight Option");
-                    DelayFlightDialog delayFlightDialog = new DelayFlightDialog(GuiApp.this);
-                    delayFlightDialog.setVisible(true);
+                    displayArea.append("Delay Flight Option\n");
+                    ChangeFlightStatusDialog changeFlightStatusDialog = new ChangeFlightStatusDialog(GuiApp.this, Flight.DELAYED);
+                    changeFlightStatusDialog.setVisible(true);
                 }
                 else {
-                    displayArea.append("No flight available");
+                    displayArea.append("No flight available\n");
                 }
             }
         });
@@ -250,12 +249,42 @@ public class GuiApp extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 displayArea.setText("");
                 if (airport.getFlights().size() > 0) {
-                    displayArea.append("Remove Flight Option");
+                    displayArea.append("Remove Flight Option\n");
                     RemoveFlightDialog removeFlightDialog = new RemoveFlightDialog(GuiApp.this);
                     removeFlightDialog.setVisible(true);
                 }
                 else {
-                    displayArea.append("No flight available");
+                    displayArea.append("No flight available\n");
+                }
+            }
+        });
+
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                displayArea.setText("");
+                if (airport.getFlights().size() > 0) {
+                    displayArea.append("Cancel Flight Option\n");
+                    ChangeFlightStatusDialog changeFlightStatusDialog = new ChangeFlightStatusDialog(GuiApp.this, Flight.CANCELLED);
+                    changeFlightStatusDialog.setVisible(true);
+                }
+                else {
+                    displayArea.append("No flight available\n");
+                }
+            }
+        });
+
+        boardingButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                displayArea.setText("");
+                if (airport.getFlights().size() > 0) {
+                    displayArea.append("Cancel Flight Option\n");
+                    ChangeFlightStatusDialog changeFlightStatusDialog = new ChangeFlightStatusDialog(GuiApp.this, Flight.BOARDING);
+                    changeFlightStatusDialog.setVisible(true);
+                }
+                else {
+                    displayArea.append("No flight available\n");
                 }
             }
         });
@@ -346,8 +375,6 @@ public class GuiApp extends JFrame {
 
         String terminal = flight.getGate().split("-", 0)[0];
         int gateNumber = Integer.parseInt(flight.getGate().split("-", 0)[1]);
-
-        System.out.println(terminal);
 
         switch (terminal) {
             case "A":

@@ -7,11 +7,12 @@ public class TerminalScreen extends Observer {
     public TerminalScreen(Terminal terminal, String name, ScreenDialog screenDialog) {
         this.terminal = terminal;
         this.name = name;
-			this.screenDialog = screenDialog;
+        this.screenDialog = screenDialog;
     }
 
     @Override
     public void update() {
+        screenDialog.setScreenText("");
         for (Flight f: terminal.getFlights()) {
             screenDialog.setScreenText(f.toString());
         }

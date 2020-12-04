@@ -10,6 +10,7 @@ public class GateScreen extends Observer {
 
     @Override
     public void update() {
+        screenDialog.setScreenText("");
         for (Flight f : gate.getFlights()) {
             screenDialog.setScreenText(f.toString());
         }

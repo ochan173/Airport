@@ -15,7 +15,7 @@ public class AirportScreen extends Observer {
 
     @Override
     public void update() {
-        System.out.println(this.name);
+        screenDialog.setScreenText("");
         for (Flight f : airport.getFlights()) {
             screenDialog.setScreenText(f.toString());
         }

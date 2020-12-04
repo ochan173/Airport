@@ -3,22 +3,24 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class DelayFlightDialog extends JDialog {
+public class ChangeFlightStatusDialog extends JDialog {
 
     public static final int WIDTH = 150;
     public static final int HEIGHT = 200;
 
     private GuiApp app;
     private String currentState = null;
+    private String status;
 
     private JButton okButton, cancelButton;
     private JPanel controlPanel;
     private JTextField companyField, flightNumberField;
 
-    public DelayFlightDialog(GuiApp app) {
+    public ChangeFlightStatusDialog(GuiApp app, String status) {
 
-        super(app, "Delay Flight");
+        super(app, "Cancel Flight");
         this.app = app;
+        this.status = status;
 
         okButton = new JButton("OK");
         okButton.addActionListener(new ActionListener() {
@@ -32,7 +34,7 @@ public class DelayFlightDialog extends JDialog {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int choice = JOptionPane.showConfirmDialog(
-                        DelayFlightDialog.this,
+                        ChangeFlightStatusDialog.this,
                         "Do you want to cancel?",
                         "Cancel",
                         JOptionPane.YES_NO_OPTION);
@@ -74,9 +76,9 @@ public class DelayFlightDialog extends JDialog {
         String company = companyField.getText();
         int flightNumber = Integer.parseInt(flightNumberField.getText());
 
-        app.changeFlightStatus(company, flightNumber, Flight.DELAYED);
+        app.changeFlightStatus(company, flightNumber, status);
 
-        app.appendToDisplayArea("Flight " + company + flightNumber + " delayed\n");
+        app.appendToDisplayArea("Flight " + company + flightNumber + " " + status + " \n");
 
     }
 
