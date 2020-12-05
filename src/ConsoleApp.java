@@ -151,9 +151,9 @@ public class ConsoleApp {
      * TODO: Implement the following methods. You may add other methods as well.
      */
 
-		/*
-		 * Changes the status of a flight to DELAYED
-		 */
+    /*
+     * Changes the status of a flight to DELAYED
+     */
     public void delayFlight() {
         changeFlightStatus(Flight.DELAYED);
     }
@@ -186,43 +186,40 @@ public class ConsoleApp {
 
         if (!gateIsAvailable(newTerminal, newGateNumber)) {
             System.out.println("New gate " + newGate + " is not available");
-        }
-				else {
-						if (oldTerminal.equals(newTerminal)) {
-							removeOldFlight(flight, oldGate, oldTerminal, true);
-						}
-						else {
-							removeOldFlight(flight, oldGate, oldTerminal, false);
-						}
+        } else {
+            if (oldTerminal.equals(newTerminal)) {
+                removeOldFlight(flight, oldGate, oldTerminal, true);
+            } else {
+                removeOldFlight(flight, oldGate, oldTerminal, false);
+            }
             flight.setGate(newGate);
             airport.updateFlights(identifier, flight);
 
-						if (oldTerminal.equals(newTerminal)) {
-							addNewFlight(flight, newGateNumber, newTerminal, true);
-						}
-						else {
-							addNewFlight(flight, newGateNumber, newTerminal, false);
-						}
+            if (oldTerminal.equals(newTerminal)) {
+                addNewFlight(flight, newGateNumber, newTerminal, true);
+            } else {
+                addNewFlight(flight, newGateNumber, newTerminal, false);
+            }
         }
     }
 
-		/*
-		 * Changes the status of a flight to CANCELLED
-		 */
+    /*
+     * Changes the status of a flight to CANCELLED
+     */
     public void cancelFlight() {
         changeFlightStatus(Flight.CANCELLED);
     }
 
-		/*
-		 * Changes the status of a flight to BOARDING
-		 */
+    /*
+     * Changes the status of a flight to BOARDING
+     */
     public void notifyBoarding() {
         changeFlightStatus(Flight.BOARDING);
     }
 
-		/*
-		 * Removes a flight
-		 */
+    /*
+     * Removes a flight
+     */
     public void removeFlight() {
         System.out.print("Company: ");
         String company = scan.next();
@@ -255,11 +252,11 @@ public class ConsoleApp {
         }
     }
 
-		/*
-		 * Retreives the information of a flight from its identifier
-		 * @param identifier The identifier of the flight (company + flight number)
-		 * @return The flight
-		 */
+    /*
+     * Retreives the information of a flight from its identifier
+     * @param identifier The identifier of the flight (company + flight number)
+     * @return The flight
+     */
     private Flight getFlight(String identifier) {
         List<Flight> flights = airport.getFlights();
 
@@ -271,11 +268,11 @@ public class ConsoleApp {
         return null;
     }
 
-		/*
-		 * Updates a flight in the concerned terminals and gates
-		 * @param identifier The identifier of the flight (company + flight number)
-		 * @param flight The new informations of the flight
-		 */
+    /*
+     * Updates a flight in the concerned terminals and gates
+     * @param identifier The identifier of the flight (company + flight number)
+     * @param flight The new informations of the flight
+     */
     private void updateTerminalGate(String identifier, Flight flight) {
         String terminal = flight.getGate().split("-", 0)[0];
         int gateNumber = Integer.parseInt(flight.getGate().split("-", 0)[1]);
@@ -296,10 +293,10 @@ public class ConsoleApp {
         }
     }
 
-		/*
-		 * Changes the status of a flight
-		 * @param status The new status of the flight
-		 */
+    /*
+     * Changes the status of a flight
+     * @param status The new status of the flight
+     */
     private void changeFlightStatus(String status) {
         System.out.print("Company: ");
         String company = scan.next();
@@ -323,112 +320,103 @@ public class ConsoleApp {
         }
     }
 
-		/*
-		 * Adds a new flight to the concerned terminal and gate
-		 * @param flight The new flight to add
-		 * @param gateNumber The new gate number of the flight
-		 * @param terminal The terminal of the flight
-		 * @param sameTerm True if the flight stays in the same terminal, else False
-		 */
-    private void addNewFlight(Flight flight,int gateNumber, String terminal, boolean sameTerm) {
-			String identifier = flight.getCompany() + Integer.toString(flight.getFlightNumber());
+    /*
+     * Adds a new flight to the concerned terminal and gate
+     * @param flight The new flight to add
+     * @param gateNumber The new gate number of the flight
+     * @param terminal The terminal of the flight
+     * @param sameTerm True if the flight stays in the same terminal, else False
+     */
+    private void addNewFlight(Flight flight, int gateNumber, String terminal, boolean sameTerm) {
+        String identifier = flight.getCompany() + Integer.toString(flight.getFlightNumber());
         switch (terminal) {
             case "A":
-								if (!sameTerm) {
-									termA.addFlight(flight);
-								}
-								else {
-									termA.updateFlights(identifier, flight);
-								}
+                if (!sameTerm) {
+                    termA.addFlight(flight);
+                } else {
+                    termA.updateFlights(identifier, flight);
+                }
                 gatesA[gateNumber - 1].addFlight(flight);
                 break;
             case "B":
-								if (!sameTerm) {
-									termB.addFlight(flight);
-								}
-								else {
-									termB.updateFlights(identifier, flight);
-								}
-								gatesB[gateNumber - 1].addFlight(flight);
+                if (!sameTerm) {
+                    termB.addFlight(flight);
+                } else {
+                    termB.updateFlights(identifier, flight);
+                }
+                gatesB[gateNumber - 1].addFlight(flight);
                 break;
             case "C":
                 if (!sameTerm) {
-									termC.addFlight(flight);
-								}
-								else {
-									termB.updateFlights(identifier, flight);
-								}
+                    termC.addFlight(flight);
+                } else {
+                    termB.updateFlights(identifier, flight);
+                }
                 gatesC[gateNumber - 1].addFlight(flight);
                 break;
         }
     }
 
-		/*
-		 * Removes a flight from the concerned terminal and gate
-		 * @param flight The new flight to remove
-		 * @param gateNumber The old gate number of the flight
-		 * @param terminal The old terminal of the flight
-		 * @param sameTerm True if the flight stays in the same terminal, esle False
-		 */
-    private void removeOldFlight(Flight flight,int gateNumber, String terminal, boolean sameTerm) {
+    /*
+     * Removes a flight from the concerned terminal and gate
+     * @param flight The new flight to remove
+     * @param gateNumber The old gate number of the flight
+     * @param terminal The old terminal of the flight
+     * @param sameTerm True if the flight stays in the same terminal, esle False
+     */
+    private void removeOldFlight(Flight flight, int gateNumber, String terminal, boolean sameTerm) {
         switch (terminal) {
             case "A":
-								if (!sameTerm) {
-								 termA.removeFlight(flight);
-								}
+                if (!sameTerm) {
+                    termA.removeFlight(flight);
+                }
                 gatesA[gateNumber - 1].removeFlight(flight);
                 break;
             case "B":
                 if (!sameTerm) {
-								 termB.removeFlight(flight);
-								}
+                    termB.removeFlight(flight);
+                }
                 gatesB[gateNumber - 1].removeFlight(flight);
                 break;
             case "C":
                 if (!sameTerm) {
-								 termC.removeFlight(flight);
-								}
+                    termC.removeFlight(flight);
+                }
                 gatesC[gateNumber - 1].removeFlight(flight);
                 break;
         }
     }
 
-		/*
-		 * Checks if a gate is already occupied by a flight
-		 * @param terminal Terminal of the flight
-		 * @param gateNumber Gate number of the flight
-		 * @return True if the gate is free, else false
-		 */
+    /*
+     * Checks if a gate is already occupied by a flight
+     * @param terminal Terminal of the flight
+     * @param gateNumber Gate number of the flight
+     * @return True if the gate is free, else false
+     */
     private boolean gateIsAvailable(String terminal, int gateNumber) {
-          switch (terminal) {
+        switch (terminal) {
             case "A":
                 if (gatesA.length == 0) {
                     return true;
-                }
-								else if (gateNumber > gatesA.length) {
-									return false;
-								}
-                else if (!gatesA[gateNumber - 1].isAvailable(terminal, gateNumber)) {
+                } else if (gateNumber > gatesA.length) {
+                    return false;
+                } else if (!gatesA[gateNumber - 1].isAvailable(terminal, gateNumber)) {
                     return false;
                 }
             case "B":
                 if (gatesB.length == 0) {
                     return true;
-                }
-								else if (gateNumber > gatesB.length) {
-									return false;
-								}
-                else if (!gatesB[gateNumber - 1].isAvailable(terminal, gateNumber)) {
+                } else if (gateNumber > gatesB.length) {
+                    return false;
+                } else if (!gatesB[gateNumber - 1].isAvailable(terminal, gateNumber)) {
                     return false;
                 }
             case "C":
                 if (gatesC.length != 0) {
                     return true;
-                }
-								else if (gateNumber > gatesC.length) {
-									return false;
-								}
-                else if (!gatesC[gateNumber - 1].isAvailable(terminal, gateNumber)) {
+                } else if (gateNumber > gatesC.length) {
+                    return false;
+                } else if (!gatesC[gateNumber - 1].isAvailable(terminal, gateNumber)) {
                     return false;
                 }
         }

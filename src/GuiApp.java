@@ -48,11 +48,13 @@ public class GuiApp extends JFrame {
     private static final String cancelFlightText = "Cancel Flight";
     private static final String notifyBoardfingText = "Notify Boarding";
     private static final String removeFlightText = "Remove Flight";
+    private static final String saveText = "Save";
+    private static final String loadText = "Load";
     private static final String quitText = "Quit";
     // TODO: Add attributes for other operations
 
     private JButton addButton, delayButton, changeGateButton, cancelButton, boardingButton,
-            removeButton, quitButton;
+            removeButton, quitButton, saveButton, loadButton;
     // TODO: Add attributes for other operations
 
     private JTextArea displayArea;
@@ -189,6 +191,8 @@ public class GuiApp extends JFrame {
         changeGateButton = new JButton(changeGateText);
         boardingButton = new JButton(notifyBoardfingText);
         removeButton = new JButton(removeFlightText);
+        saveButton = new JButton(saveText);
+        loadButton = new JButton(loadText);
         quitButton = new JButton(quitText);
         // TODO: Add button instanciations for other operations
 
@@ -212,6 +216,8 @@ public class GuiApp extends JFrame {
         contentPanel.add(changeGateButton);
         contentPanel.add(boardingButton);
         contentPanel.add(removeButton);
+        contentPanel.add(saveButton);
+        contentPanel.add(loadButton);
         // TODO: Add other buttons
         contentPanel.add(quitButton);
 
@@ -237,8 +243,7 @@ public class GuiApp extends JFrame {
                     displayArea.append("Delay Flight Option\n");
                     ChangeFlightStatusDialog changeFlightStatusDialog = new ChangeFlightStatusDialog(GuiApp.this, Flight.DELAYED);
                     changeFlightStatusDialog.setVisible(true);
-                }
-                else {
+                } else {
                     displayArea.append("No flight available\n");
                 }
             }
@@ -252,8 +257,7 @@ public class GuiApp extends JFrame {
                     displayArea.append("Remove Flight Option\n");
                     RemoveFlightDialog removeFlightDialog = new RemoveFlightDialog(GuiApp.this);
                     removeFlightDialog.setVisible(true);
-                }
-                else {
+                } else {
                     displayArea.append("No flight available\n");
                 }
             }
@@ -267,8 +271,7 @@ public class GuiApp extends JFrame {
                     displayArea.append("Cancel Flight Option\n");
                     ChangeFlightStatusDialog changeFlightStatusDialog = new ChangeFlightStatusDialog(GuiApp.this, Flight.CANCELLED);
                     changeFlightStatusDialog.setVisible(true);
-                }
-                else {
+                } else {
                     displayArea.append("No flight available\n");
                 }
             }
@@ -282,8 +285,7 @@ public class GuiApp extends JFrame {
                     displayArea.append("Cancel Flight Option\n");
                     ChangeFlightStatusDialog changeFlightStatusDialog = new ChangeFlightStatusDialog(GuiApp.this, Flight.BOARDING);
                     changeFlightStatusDialog.setVisible(true);
-                }
-                else {
+                } else {
                     displayArea.append("No flight available\n");
                 }
             }
@@ -307,6 +309,39 @@ public class GuiApp extends JFrame {
                 }
             }
         });
+
+        changeGateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                displayArea.setText("");
+                if (airport.getFlights().size() > 0) {
+                    displayArea.append("Change gate Option\n");
+                    ChangeGateDialog changeGateDialog = new ChangeGateDialog(GuiApp.this);
+                    changeGateDialog.setVisible(true);
+                } else {
+                    displayArea.append("No flight available\n");
+                }
+            }
+        });
+
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser jf = new JFileChooser();
+
+                jf.showSaveDialog(null);
+            }
+        });
+
+        loadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser jf = new JFileChooser();
+
+                jf.showSaveDialog(null);
+            }
+        });
+
 
     }
 
@@ -413,6 +448,142 @@ public class GuiApp extends JFrame {
             case "C":
                 termC.updateFlights(identifier, flight);
                 gatesC[gateNumber - 1].updateFlights(identifier, flight);
+                break;
+        }
+    }
+
+    public void changeGate(String company, int fn, String newTerminal, int newGateNumber) {
+
+        String identifier = company + Integer.toString(fn);
+
+        Flight flight = getFlight(identifier);
+
+        String oldTerminal = flight.getGate().split("-", 0)[0];
+        int oldGate = Integer.parseInt(flight.getGate().split("-", 0)[1]);
+
+
+        boolean gateAvailable = true;
+
+        String newGate = newTerminal + "-" + Integer.toString(newGateNumber);
+
+        if (!gateIsAvailable(newTerminal, newGateNumber)) {
+            System.out.println("New gate " + newGate + " is not available");
+        } else {
+            if (oldTerminal.equals(newTerminal)) {
+                removeOldFlight(flight, oldGate, oldTerminal, true);
+            } else {
+                removeOldFlight(flight, oldGate, oldTerminal, false);
+            }
+            flight.setGate(newGate);
+            airport.updateFlights(identifier, flight);
+
+            if (oldTerminal.equals(newTerminal)) {
+                addNewFlight(flight, newGateNumber, newTerminal, true);
+            } else {
+                addNewFlight(flight, newGateNumber, newTerminal, false);
+            }
+        }
+    }
+
+    /*
+     * Checks if a gate is already occupied by a flight
+     * @param terminal Terminal of the flight
+     * @param gateNumber Gate number of the flight
+     * @return True if the gate is free, else false
+     */
+    private boolean gateIsAvailable(String terminal, int gateNumber) {
+        switch (terminal) {
+            case "A":
+                if (gatesA.length == 0) {
+                    return true;
+                } else if (gateNumber > gatesA.length) {
+                    return false;
+                } else if (!gatesA[gateNumber - 1].isAvailable(terminal, gateNumber)) {
+                    return false;
+                }
+            case "B":
+                if (gatesB.length == 0) {
+                    return true;
+                } else if (gateNumber > gatesB.length) {
+                    return false;
+                } else if (!gatesB[gateNumber - 1].isAvailable(terminal, gateNumber)) {
+                    return false;
+                }
+            case "C":
+                if (gatesC.length != 0) {
+                    return true;
+                } else if (gateNumber > gatesC.length) {
+                    return false;
+                } else if (!gatesC[gateNumber - 1].isAvailable(terminal, gateNumber)) {
+                    return false;
+                }
+        }
+        return true;
+    }
+
+    /*
+     * Adds a new flight to the concerned terminal and gate
+     * @param flight The new flight to add
+     * @param gateNumber The new gate number of the flight
+     * @param terminal The terminal of the flight
+     * @param sameTerm True if the flight stays in the same terminal, else False
+     */
+    private void addNewFlight(Flight flight, int gateNumber, String terminal, boolean sameTerm) {
+        String identifier = flight.getCompany() + Integer.toString(flight.getFlightNumber());
+        switch (terminal) {
+            case "A":
+                if (!sameTerm) {
+                    termA.addFlight(flight);
+                } else {
+                    termA.updateFlights(identifier, flight);
+                }
+                gatesA[gateNumber - 1].addFlight(flight);
+                break;
+            case "B":
+                if (!sameTerm) {
+                    termB.addFlight(flight);
+                } else {
+                    termB.updateFlights(identifier, flight);
+                }
+                gatesB[gateNumber - 1].addFlight(flight);
+                break;
+            case "C":
+                if (!sameTerm) {
+                    termC.addFlight(flight);
+                } else {
+                    termB.updateFlights(identifier, flight);
+                }
+                gatesC[gateNumber - 1].addFlight(flight);
+                break;
+        }
+    }
+
+    /*
+     * Removes a flight from the concerned terminal and gate
+     * @param flight The new flight to remove
+     * @param gateNumber The old gate number of the flight
+     * @param terminal The old terminal of the flight
+     * @param sameTerm True if the flight stays in the same terminal, esle False
+     */
+    private void removeOldFlight(Flight flight, int gateNumber, String terminal, boolean sameTerm) {
+        switch (terminal) {
+            case "A":
+                if (!sameTerm) {
+                    termA.removeFlight(flight);
+                }
+                gatesA[gateNumber - 1].removeFlight(flight);
+                break;
+            case "B":
+                if (!sameTerm) {
+                    termB.removeFlight(flight);
+                }
+                gatesB[gateNumber - 1].removeFlight(flight);
+                break;
+            case "C":
+                if (!sameTerm) {
+                    termC.removeFlight(flight);
+                }
+                gatesC[gateNumber - 1].removeFlight(flight);
                 break;
         }
     }
