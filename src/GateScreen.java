@@ -11,9 +11,11 @@ public class GateScreen extends Observer {
     @Override
     public void update() {
         screenDialog.setScreenText("");
+        StringBuilder text = new StringBuilder();
         for (Flight f : gate.getFlights()) {
-            screenDialog.setScreenText(f.toString());
+            text.append(f.toString()).append("\n");
         }
+        screenDialog.setScreenText(text.toString());
     }
 
     public Gate getGate() {

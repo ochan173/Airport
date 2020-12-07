@@ -5,20 +5,22 @@ public class AirportScreen extends Observer {
 
     private Airport airport;
     private String name;
-	  private ScreenDialog screenDialog;
+    private ScreenDialog screenDialog;
 
     public AirportScreen(Airport airport, String name, ScreenDialog screenDialog) {
         this.airport = airport;
         this.name = name;
-			  this.screenDialog = screenDialog;
+        this.screenDialog = screenDialog;
     }
 
     @Override
     public void update() {
         screenDialog.setScreenText("");
+        StringBuilder text = new StringBuilder();
         for (Flight f : airport.getFlights()) {
-            screenDialog.setScreenText(f.toString());
+            text.append(f.toString()).append("\n");
         }
+        screenDialog.setScreenText(text.toString());
     }
 
     public Airport getAirport() {

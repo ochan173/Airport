@@ -13,9 +13,11 @@ public class TerminalScreen extends Observer {
     @Override
     public void update() {
         screenDialog.setScreenText("");
-        for (Flight f: terminal.getFlights()) {
-            screenDialog.setScreenText(f.toString());
+        StringBuilder text = new StringBuilder();
+        for (Flight f : terminal.getFlights()) {
+            text.append(f.toString()).append("\n");
         }
+        screenDialog.setScreenText(text.toString());
     }
 
     public Terminal getTerminal() {

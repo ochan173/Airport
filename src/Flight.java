@@ -1,4 +1,6 @@
-public class Flight {
+import java.io.Serializable;
+
+public class Flight implements Serializable {
   
   /**
    * Constant string for the ON TIME status

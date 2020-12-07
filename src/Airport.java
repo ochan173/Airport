@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class Airport extends Subject{
+public class Airport extends Subject {
     private List<Flight> flights;
 
     public Airport() {
@@ -18,18 +18,18 @@ public class Airport extends Subject{
         flights.remove(flight);
         notifyObservers();
     }
-	
-	    public void updateFlights(String identifier, Flight flight) {
-       if (flights.size() >= 1) {
+
+    public void updateFlights(String identifier, Flight flight) {
+        if (flights.size() >= 1) {
             int index = -1;
-            for (Flight f: flights) {
+            for (Flight f : flights) {
                 index++;
 
                 if (identifier.equals(f.getCompany() + f.getFlightNumber())) {
                     flights.set(index, flight);
                 }
             }
-				 notifyObservers();
+            notifyObservers();
         }
     }
 

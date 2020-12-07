@@ -1,6 +1,9 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
+import java.util.LinkedList;
 import java.util.List;
+import javax.imageio.IIOException;
 import javax.swing.*;
 
 public class GuiApp extends JFrame {
@@ -327,18 +330,39 @@ public class GuiApp extends JFrame {
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser jf = new JFileChooser();
+                //https://www.codejava.net/java-se/swing/show-simple-open-file-dialog-using-jfilechooser
+                JFileChooser fileChooser = new JFileChooser();
+                int result = fileChooser.showOpenDialog(null);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+                    try {
+                        saveFlights(selectedFile.getAbsolutePath());
+                    }
+                    catch (IOException exception) {
+                        displayArea.append("File not found\n");
+                    }
+                }
 
-                jf.showSaveDialog(null);
             }
         });
 
         loadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser jf = new JFileChooser();
-
-                jf.showSaveDialog(null);
+                //https://www.codejava.net/java-se/swing/show-simple-open-file-dialog-using-jfilechooser
+                JFileChooser fileChooser = new JFileChooser();
+                int result = fileChooser.showOpenDialog(null);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+                    try {
+                        loadFlights(selectedFile.getAbsolutePath());
+                    }
+                    catch (IOException exception) {
+                        displayArea.append("File not found\n");
+                    }
+                }
             }
         });
 
@@ -597,6 +621,42 @@ public class GuiApp extends JFrame {
             }
         }
         return null;
+    }
+
+    private void saveFlights(String path) throws IOException {
+        FileOutputStream fos = new FileOutputStream(path);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(airport.getFlights());
+        oos.close();
+
+        displayArea.append("");
+        displayArea.append("Flights saved!");
+    }
+
+    private void loadFlights(String path) throws IOException {
+        FileInputStream fin = new FileInputStream(path);
+        ObjectInputStream ois = new ObjectInputStream(fin);
+        List<Flight> flights = new LinkedList<Flight>();
+        try {
+            flights = (List<Flight>) ois.readObject();
+            System.out.println(flights.size());
+        }
+        catch (ClassNotFoundException ce) {
+            displayArea.append("Error : " + ce.getMessage());
+        }
+
+        ois.close();
+
+        for (Flight f : flights) {
+            String terminal = f.getGate().split("-", 0)[0];
+            int gateNumber = Integer.parseInt(f.getGate().split("-", 0)[1]);
+
+            addFlightToAirport(f);
+            addFlightToTerminal(f, terminal);
+            addFlightToGate(f, terminal, gateNumber);
+        }
+        displayArea.append("");
+        displayArea.append("Flights loaded!");
     }
 
     public void appendToDisplayArea(String text) {
